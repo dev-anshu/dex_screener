@@ -7,15 +7,29 @@ export default function RegisterForm() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [address, setAddress] = useState("");
+    const [error, setError] = useState("");
     const router = useRouter();
     
     useEffect(() => {
       setAddress("0xiuiuh78y8hu787uihiu");
     },[])
 
+    const validateEmail = (email: string) => {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-    
+
+        if (!validateEmail(email)) {
+          setError("Invalid email address.");
+          return;
+        }
+        if (password.length < 8) {
+          setError("Password must be at least 8 characters long.");
+          return;
+        }
         try {
           const res = await fetch("api/register", {
             method: "POST",
@@ -31,8 +45,9 @@ export default function RegisterForm() {
     
           if (res.ok) {
             router.push('/signin');
-    
           } else {
+            const resp = await res.json()
+            setError(resp.error);
             console.log("User registration failed.");
           }
         } catch (error) {
@@ -40,30 +55,39 @@ export default function RegisterForm() {
         }
       };
 
+      const handleInputChange = (setter:any) => (e: any) => {
+        setter(e.target.value);
+        setError(""); 
+      }
       return (
-        <div className="bg-blue-500 shadow-lg p-5 rounded-lg text-black">
-            <h1>Register</h1>
+        <div className="min-h-screen bg-gradient-to-r from-gray-800 via-gray-700 to-gray-900 flex items-center justify-center">
+          <div className="bg-[#1f2937] shadow-lg p-5 rounded-lg text-white max-w-md w-full">
+            <h1 className="text-2xl font-bold mb-4">Sign Up</h1>
             <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-
-
-            <input
-            onChange={(e) => setEmail(e.target.value)}
-            type="text"
-            placeholder="Email"
-            className="bg-white text-black rounded-lg px-3 py-2"
-            required
-          />
-          <input
-            onChange={(e) => setPassword(e.target.value)}
-            type="password"
-            placeholder="Password"
-            required
-            className="bg-white text-black rounded-lg px-3 py-2"
-          />
-            <Button className="bg-blue-600 text-white font-bold cursor-pointer px-6 py-2">
-            Register
-          </Button>
+              <input
+                onChange={handleInputChange(setEmail)}
+                type="text"
+                placeholder="Email"
+                className="bg-gray-700 text-white rounded-lg px-3 py-2"
+                required
+              />
+              <input
+                onChange={handleInputChange(setPassword)}
+                type="password"
+                placeholder="Password"
+                required
+                className="bg-gray-700 text-white rounded-lg px-3 py-2"
+              />
+              <Button className="bg-gray-600 hover:bg-gray-700 text-white font-bold cursor-pointer px-6 py-2 rounded-lg">
+                Register
+              </Button>
+              {error && (
+                <div className="bg-red-500 text-white w-fit text-sm py-1 px-3 rounded-md mt-2">
+              {error}
+            </div>
+          )}
             </form>
+          </div>
         </div>
-    )
+      );
 }
