@@ -18,7 +18,7 @@ export default function LoginForm() {
       const res = await signIn("credentials", {
         email,
         password,
-        callbackUrl: "/",
+        callbackUrl: "/dashboard",
       });
 
       if (res?.error) {
@@ -26,7 +26,7 @@ export default function LoginForm() {
         return;
       }
 
-      router.replace("/");
+      router.replace("/dashboard");
     } catch (error) {
       console.log(error);
     }
