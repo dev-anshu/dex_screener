@@ -1,7 +1,8 @@
-import { Awaitable, NextAuthOptions, RequestInternal, User } from "next-auth";
+import { NextAuthOptions  } from "next-auth";
 import CredentialsProvider  from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-import Email from "next-auth/providers/email";
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import prisma from "@/lib/prisma";
 
 export const authOptions: NextAuthOptions = {
     providers: [
@@ -9,18 +10,17 @@ export const authOptions: NextAuthOptions = {
             id: "credentials",
             name: "Credentials",
             credentials: {
-                Email: {
+                email: {
                     label: "Email", type: "text",
                     placeholder: "joe.doe@xyz.com"
                 },
                 password: {label: "Password", type: "password"}
             },
             async authorize(credentials: any): Promise<any> {
-                // Connect DB
                 try{
-                    // find user
-                    let user;
-
+                    const user = await prisma.user.findUnique({
+                        where: { email: credentials.email },
+                    });
                     if(!user) {
                         throw new Error('No User found with this email')
                     }
@@ -31,8 +31,6 @@ export const authOptions: NextAuthOptions = {
                     } else {
                         throw new Error("Incorrect Password")
                     }
-                
-
                 } catch(error:any) {
                     throw new Error(error);
                 }
@@ -41,14 +39,17 @@ export const authOptions: NextAuthOptions = {
     ],
     callbacks: {
         async session({session, token}) {
+            session.user = token.user;
             return session;
         },
         async jwt({token, user}) {
+            if(user) token.user = user;
             return token;
         }
     },
+    adapter: PrismaAdapter(prisma),
     pages: {
-        signIn: '/login'
+        signIn: '/signin',
     },
     session: {
         strategy: "jwt"

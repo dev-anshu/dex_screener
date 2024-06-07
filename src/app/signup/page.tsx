@@ -1,9 +1,7 @@
-import React from 'react'
+import RegisterForm from "../ui/RegisterForm";
 
-function page() {
-  return (
-    <div>page</div>
-  )
+export default function RegisterFormPage() {
+    return (
+        <RegisterForm />
+    )
 }
-
-export default page
