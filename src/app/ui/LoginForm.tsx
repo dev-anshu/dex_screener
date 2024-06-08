@@ -1,15 +1,22 @@
 "use client";
-import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { useState, useEffect } from "react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
 export default function LoginForm() {
+  const { data: session, status } = useSession();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
   const router = useRouter();
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.replace("/dashboard");
+    }
+  }, [status, router]); 
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -48,6 +55,18 @@ export default function LoginForm() {
   const handleInputChange = (setter: any) => (e: any) => {
     setter(e.target.value);
     setError(""); 
+  }
+
+  if (status === "loading") {
+    return (
+      <div className="min-h-screen bg-gradient-to-r from-gray-800 via-gray-700 to-gray-900 flex items-center justify-center">
+        <div className="text-white">Loading...</div>
+      </div>
+    );
+  }
+
+  if (status === "authenticated") { 
+    return null;
   }
 
   return (

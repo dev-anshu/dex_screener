@@ -28,7 +28,7 @@
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
     "viem": "^2.13.7",
-    "wagmi": "^2.9.9"
+    "wagmi": "^2.9.10"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

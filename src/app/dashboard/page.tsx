@@ -6,34 +6,30 @@ import TabNavigation from '../ui/TabNavigation';
 import SelectDropdown from '../ui/SelectDropdown';
 import TableList from '../ui/TableList';
 import { useRouter } from 'next/navigation';
+import { Swap } from '../interfaces/swap';
 
 
 export default function Dashboard() {
-
+  
   const [activeTab, setActiveTab] = useState('All');
+  const [selectedChain, setSelectedChain] = useState('Ethereum');
+  const [data, setData] = useState<Swap[]>([]); 
+  const [data2, setData2] = useState<Swap[]>([]); 
+  const [swapTxn, setSwapTxn] = useState<Swap[]>([]);
   const { data: session, status } = useSession();
   const router = useRouter();
 
   const tabs = ['All', 'Uniswap', 'Pancakeswap'];
 
 
-  const themeOptions = [
+  const chainOptions = [
     { value: "Ethereum", label: "Ethereum" },
     { value: "Polygon", label: "Polygon" },
     { value: "Arbitum", label: "Arbitum" },
   ];
 
-  const data = [
-    { token: 'MEV/SOL', name: 'SOLANA MEV AI', price: '$0.000678', txns: '25,469', volume: '$9.0M', makers: '7,671', fiveM: '-4.81%', oneH: '136%', sixH: '220%', twentyFourH: '220%', liquidity: '$235K', fdv: '$6.0M' },
-  ];
 
-//   if (status === "loading") {
-//     return <p>Loading...</p>;
-// }
 
-// if (status === "unauthenticated") {
-//     return <p>You are not logged in</p>;
-// }
   useEffect(() => {
     if (status === "loading") return;
 
@@ -45,9 +41,44 @@ export default function Dashboard() {
     }
   }, [session, status, router]);
 
-  // if (status === "loading" || !session) {
-  //   return <p>Loading...</p>;
-  // }
+  useEffect(() => {
+    const getUniswapTxns = async () => {
+      try {
+        const response = await fetch('/api/uniswap');
+        const uniswapSwaps = await response.json();
+        return uniswapSwaps.data.swaps.map((swap: Swap) => ({ ...swap, dex: 'uniswap' }));
+      } catch (error) {
+        console.error(error);
+        return [];
+      }
+    };
+    const getPancakeswapTxns = async () => {
+      try{
+        const response = await fetch('/api/pancakeswap');
+        const pancakeswapSwaps = await response.json();
+        console.log(pancakeswapSwaps);
+        return pancakeswapSwaps.data.swaps.map((swap: Swap) => ({ ...swap, dex: 'pancakeswap' }));
+      } catch(error) {
+        console.log(error)
+        return []
+      }
+    }
+    const getAllSwapTxns = async () => {
+      try {
+        const [uniswapSwaps, pancakeswapSwaps] = await Promise.all([getUniswapTxns(), getPancakeswapTxns()]);
+        console.log(uniswapSwaps,'[][[]',pancakeswapSwaps)
+        setSwapTxn([...uniswapSwaps, ...pancakeswapSwaps]);
+        console.log(swapTxn,'=====>')
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    getAllSwapTxns();
+    console.log('=====>',swapTxn);
+  }, [activeTab, selectedChain]);
+
+
   if (status === "loading") {
     return (
       <div className="flex h-screen items-center justify-center">
@@ -79,7 +110,7 @@ export default function Dashboard() {
       <div className="flex-1 bg-gray-100 p-4">
         <div className="flex justify-between items-center mb-4">
           <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} tabs={tabs} />
-          <SelectDropdown themeOptions={themeOptions} />
+          <SelectDropdown chainOptions={chainOptions} setSelectedChain={setSelectedChain} />
         </div>
         <TableList data={data} />
       </div>

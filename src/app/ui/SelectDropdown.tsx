@@ -1,14 +1,19 @@
 "use client";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 
-export default function SelectDropdown({ themeOptions }:any) {
+interface SelectDropdownProps {
+  chainOptions: { value: string; label: string }[];
+  setSelectedChain: (theme: string) => void;
+}
+
+export default function SelectDropdown({ chainOptions, setSelectedChain }: SelectDropdownProps) {
   return (
-    <Select>
+    <Select onValueChange={(value) => setSelectedChain(value)}>
       <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Filter" />
+        <SelectValue placeholder="Ethereum" />
       </SelectTrigger>
       <SelectContent>
-        {themeOptions.map((option:any) => (
+        {chainOptions.map((option:any) => (
           <SelectItem key={option.value} value={option.value}>
             {option.label}
           </SelectItem>
