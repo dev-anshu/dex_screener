@@ -42,7 +42,7 @@ export default function Dashboard() {
   useEffect(() => {
     const getUniswapTxns = async () => {
       try {
-        const response = await fetch('/api/uniswap',{ next: { revalidate: 10 } });
+        const response = await fetch('/api/uniswap',{ cache: 'no-store' });
         const uniswapSwaps = await response.json();
         return uniswapSwaps.data.swaps.map((swap: Swap) => ({ ...swap, dex: 'uniswap' }));
       } catch (error) {
@@ -52,7 +52,7 @@ export default function Dashboard() {
     };
     const getPancakeswapTxns = async () => {
       try{
-        const response = await fetch('/api/pancakeswap');
+        const response = await fetch('/api/pancakeswap', { cache: 'no-store' });
         const pancakeswapSwaps = await response.json();
         return pancakeswapSwaps.data.swaps.map((swap: Swap) => ({ ...swap, dex: 'pancakeswap' }));
       } catch(error) {

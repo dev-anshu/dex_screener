@@ -27,13 +27,19 @@ export default function TableList({ txns }:any) {
               <TableHead>Timestamp</TableHead>
               <TableHead>from</TableHead>
               <TableHead>to</TableHead>
-              <TableHead>Block/DEX</TableHead>
+              <TableHead>Block No./DEX</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {txns.map((row: any, index: any) => (
               <TableRow key={index}>
-                <TableCell><a href={`https://etherscan.io/tx/${row.transaction.id}`} target="_blank" rel="noopener noreferrer">{formatTxns(row.transaction.id)}</a></TableCell>
+                <TableCell>    <a
+      href={`https://${row.dex === "uniswap" ? "etherscan.io" : "bscscan.com"}/tx/${row.transaction.id}`}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      {formatTxns(row.transaction.id)}
+    </a></TableCell>
                 <TableCell>{parseFloat(row.amount0) > 0 ? `${parseFloat(row.amount0).toFixed(3)} ${row.token0.symbol}`  :`${parseFloat(row.amount1).toFixed(3)} ${row.token1.symbol}`}</TableCell>
                 <TableCell>{parseFloat(row.amount1) < 0 ? `${Math.abs(row.amount1).toFixed(3)} ${row.token1.symbol}` : `${Math.abs(row.amount0).toFixed(3)} ${row.token0.symbol}`}</TableCell>
                 <TableCell>{row.transaction.gasUsed}</TableCell>

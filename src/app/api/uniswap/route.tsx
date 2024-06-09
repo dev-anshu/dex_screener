@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import query from '@/lib/graphqlSchema';
 import NodeCache from 'node-cache';
 
-const cache = new NodeCache({ stdTTL: 1 });
+const cache = new NodeCache({ stdTTL: 60 });
 
 export async function GET() {
     try {
