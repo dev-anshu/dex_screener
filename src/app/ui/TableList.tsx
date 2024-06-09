@@ -1,15 +1,18 @@
 "use client";
+import { useEffect, useState } from 'react';
 import { Table, TableHead, TableRow, TableCell, TableBody, TableHeader } from '@/components/ui/table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 
-export default function TableList({ data }:any) {
+export default function TableList({ txns }:any) {
+
+
   const formatTxns = (txns: string) => {
     return `${txns.slice(0, 2)}...${txns.slice(-3)}`;
   };
-  data.sort((a: any, b: any) => b.transaction.timestamp - a.transaction.timestamp);
+  txns.sort((a: any, b: any) => b.transaction.timestamp - a.transaction.timestamp);
   return (
-    <Card>
+    <Card className='h-screen overflow-auto'>
       <CardHeader>
         <CardTitle>Token Data</CardTitle>
       </CardHeader>
@@ -28,7 +31,7 @@ export default function TableList({ data }:any) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.map((row: any, index: any) => (
+            {txns.map((row: any, index: any) => (
               <TableRow key={index}>
                 <TableCell><a href={`https://etherscan.io/tx/${row.transaction.id}`} target="_blank" rel="noopener noreferrer">{formatTxns(row.transaction.id)}</a></TableCell>
                 <TableCell>{parseFloat(row.amount0) > 0 ? `${parseFloat(row.amount0).toFixed(3)} ${row.token0.symbol}`  :`${parseFloat(row.amount1).toFixed(3)} ${row.token1.symbol}`}</TableCell>

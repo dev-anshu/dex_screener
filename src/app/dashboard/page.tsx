@@ -62,15 +62,15 @@ export default function Dashboard() {
     }
     const getAllSwapTxns = async () => {
       try {
-        let dex = [];
+        let dexPromises = [];
         if(activeTab === "Uniswap") {
-          dex = [getUniswapTxns()];
+          dexPromises = [getUniswapTxns()];
         } else if(activeTab === "Pancakeswap"){
-          dex = [getPancakeswapTxns()];
+          dexPromises = [getPancakeswapTxns()];
         } else{
-          dex = [getUniswapTxns(), getPancakeswapTxns()];
+          dexPromises = [getUniswapTxns(), getPancakeswapTxns()];
         }
-        const results = await Promise.all(dex);
+        const results = await Promise.all(dexPromises);
         let resultTxns = [];
         if (activeTab === "Uniswap" || activeTab === "Pancakeswap") {
             resultTxns = results[0];
@@ -120,7 +120,7 @@ export default function Dashboard() {
           <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} tabs={tabs} />
           <SelectDropdown chainOptions={chainOptions} setSelectedChain={setSelectedChain} />
         </div>
-        <TableList data={swapTxn} />
+        <TableList txns={swapTxn} />
       </div>
     </div>
   );

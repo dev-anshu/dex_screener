@@ -14,7 +14,7 @@ export default function TabNavigation({ activeTab, setActiveTab, tabs }: TabNavi
       {tabs.map((tab:any) => (
         <Button 
           key={tab} onClick={() => setActiveTab(tab)} 
-          className={`py-2 px-4 ${activeTab === tab ? 'bg-gray-300' : 'bg-gray-200'}`}>
+          className={`py-2 px-4 ${activeTab === tab ? 'bg-gray-700' : 'bg-gray-400'}`}>
           {tab}
         </Button>
       ))}

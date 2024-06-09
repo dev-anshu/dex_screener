@@ -1,18 +1,33 @@
 "use client"
+import { useSession } from "next-auth/react";
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
+import { useAccount } from 'wagmi'; 
 
 export default function RegisterForm() {
+    const { data: session, status } = useSession();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [address, setAddress] = useState("");
     const [error, setError] = useState("");
+    const {address: walletAddress, isConnected } = useAccount(); 
     const router = useRouter();
     
+
     useEffect(() => {
-      setAddress("0xiuiuh78y8hu787uihiu");
-    },[])
+      if (status === "authenticated") {
+        router.replace("/dashboard");
+      }
+    }, [status, router]); 
+
+    
+    useEffect(() => {
+      if (walletAddress) {
+        setAddress(walletAddress);
+      }
+    },[walletAddress])
 
     const validateEmail = (email: string) => {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -59,6 +74,7 @@ export default function RegisterForm() {
         setter(e.target.value);
         setError(""); 
       }
+
       return (
         <div className="min-h-screen bg-gradient-to-r from-gray-800 via-gray-700 to-gray-900 flex items-center justify-center">
           <div className="bg-[#1f2937] shadow-lg p-5 rounded-lg text-white max-w-md w-full">
@@ -78,9 +94,15 @@ export default function RegisterForm() {
                 required
                 className="bg-gray-700 text-white rounded-lg px-3 py-2"
               />
-              <Button className="bg-gray-600 hover:bg-gray-700 text-white font-bold cursor-pointer px-6 py-2 rounded-lg">
-                Register
-              </Button>
+              <ConnectButton 
+                chainStatus="icon" 
+                showBalance={false} 
+              />
+              {isConnected && (
+                <Button className="bg-gray-600 hover:bg-gray-700 text-white font-bold cursor-pointer px-6 py-2 rounded-lg">
+                  Register
+                </Button>
+              )}
               {error && (
                 <div className="bg-red-500 text-white w-fit text-sm py-1 px-3 rounded-md mt-2">
               {error}
