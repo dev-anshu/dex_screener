@@ -1,6 +1,6 @@
 const query = `
 {
-    swaps (orderBy: timestamp, orderDirection: desc) {
+    swaps (orderBy: timestamp, orderDirection: desc, first: 1) {
       transaction {
         blockNumber
         timestamp

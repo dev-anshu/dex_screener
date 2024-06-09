@@ -4,6 +4,20 @@ import bcrypt from "bcryptjs";
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import prisma from "@/lib/prisma";
 
+interface User {
+    user_id: number;
+    email: string;
+    address: string;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+interface User {
+    user_id: number;
+    email: string;
+    address: string;
+}
+
 export const authOptions: NextAuthOptions = {
     providers: [
         CredentialsProvider({
@@ -27,7 +41,13 @@ export const authOptions: NextAuthOptions = {
                     const isPasswordCorrect = await bcrypt.compare(credentials.password, user.password);
 
                     if(isPasswordCorrect) {
-                        return user;
+                        return {
+                            user_id: user.user_id,
+                            email: user.email,
+                            address: user.address,
+                            createdAt: user.createdAt,
+                            updatedAt: user.updatedAt
+                        };
                     } else {
                         throw new Error("Incorrect Password")
                     }
@@ -39,7 +59,7 @@ export const authOptions: NextAuthOptions = {
     ],
     callbacks: {
         async session({session, token}) {
-            session.user = token.user;
+            session.user = token.user as User;
             return session;
         },
         async jwt({token, user}) {

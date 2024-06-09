@@ -42,7 +42,7 @@ export default function Dashboard() {
   useEffect(() => {
     const getUniswapTxns = async () => {
       try {
-        const response = await fetch('/api/uniswap');
+        const response = await fetch('/api/uniswap',{ next: { revalidate: 10 } });
         const uniswapSwaps = await response.json();
         return uniswapSwaps.data.swaps.map((swap: Swap) => ({ ...swap, dex: 'uniswap' }));
       } catch (error) {
