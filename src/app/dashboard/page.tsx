@@ -32,7 +32,7 @@ export default function Dashboard() {
     if (status === "loading") return;
 
     if (status === "unauthenticated") {
-      return <p>You are not logged in</p>;
+      return;
     }
     if (!session) {
       router.replace('/signin');
