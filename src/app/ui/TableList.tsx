@@ -7,7 +7,7 @@ export default function TableList({ data }:any) {
   const formatTxns = (txns: string) => {
     return `${txns.slice(0, 2)}...${txns.slice(-3)}`;
   };
-
+  data.sort((a: any, b: any) => b.transaction.timestamp - a.transaction.timestamp);
   return (
     <Card>
       <CardHeader>
@@ -24,7 +24,7 @@ export default function TableList({ data }:any) {
               <TableHead>Timestamp</TableHead>
               <TableHead>from</TableHead>
               <TableHead>to</TableHead>
-              <TableHead>Block</TableHead>
+              <TableHead>Block/DEX</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -37,7 +37,7 @@ export default function TableList({ data }:any) {
                 <TableCell>{row.transaction.timestamp}</TableCell>
                 <TableCell>{formatTxns(row.origin)}</TableCell>
                 <TableCell>{formatTxns(row.recipient)}</TableCell>
-                <TableCell>{row.transaction.blockNumber}</TableCell>
+                <TableCell>{`${row.transaction.blockNumber}/${row.dex}`}</TableCell>
               </TableRow>
             ))}
           </TableBody>

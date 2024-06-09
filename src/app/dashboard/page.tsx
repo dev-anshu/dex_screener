@@ -12,9 +12,7 @@ import { Swap } from '../interfaces/swap';
 export default function Dashboard() {
   
   const [activeTab, setActiveTab] = useState('All');
-  const [selectedChain, setSelectedChain] = useState('Ethereum');
-  const [data, setData] = useState<Swap[]>([]); 
-  const [data2, setData2] = useState<Swap[]>([]); 
+  const [selectedChain, setSelectedChain] = useState('Ethereum'); 
   const [swapTxn, setSwapTxn] = useState<Swap[]>([]);
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -56,7 +54,6 @@ export default function Dashboard() {
       try{
         const response = await fetch('/api/pancakeswap');
         const pancakeswapSwaps = await response.json();
-        console.log(pancakeswapSwaps);
         return pancakeswapSwaps.data.swaps.map((swap: Swap) => ({ ...swap, dex: 'pancakeswap' }));
       } catch(error) {
         console.log(error)
@@ -65,18 +62,29 @@ export default function Dashboard() {
     }
     const getAllSwapTxns = async () => {
       try {
-        const [uniswapSwaps, pancakeswapSwaps] = await Promise.all([getUniswapTxns(), getPancakeswapTxns()]);
-        console.log(uniswapSwaps,'[][[]',pancakeswapSwaps)
-        setSwapTxn([...uniswapSwaps, ...pancakeswapSwaps]);
-        console.log(swapTxn,'=====>')
+        let dex = [];
+        if(activeTab === "Uniswap") {
+          dex = [getUniswapTxns()];
+        } else if(activeTab === "Pancakeswap"){
+          dex = [getPancakeswapTxns()];
+        } else{
+          dex = [getUniswapTxns(), getPancakeswapTxns()];
+        }
+        const results = await Promise.all(dex);
+        let resultTxns = [];
+        if (activeTab === "Uniswap" || activeTab === "Pancakeswap") {
+            resultTxns = results[0];
+        } else {
+            resultTxns = [...results[0], ...results[1]];
+        }
+        setSwapTxn(resultTxns);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
 
     getAllSwapTxns();
-    console.log('=====>',swapTxn);
-  }, [activeTab, selectedChain]);
+  }, [activeTab]);
 
 
   if (status === "loading") {
@@ -112,7 +120,7 @@ export default function Dashboard() {
           <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} tabs={tabs} />
           <SelectDropdown chainOptions={chainOptions} setSelectedChain={setSelectedChain} />
         </div>
-        <TableList data={data} />
+        <TableList data={swapTxn} />
       </div>
     </div>
   );
