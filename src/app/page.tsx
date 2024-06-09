@@ -7,7 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 export default function Landing() {
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col justify-between">
-      {/* Hero Section */}
       <header className="bg-customPrimary text-white p-6">
         <div className="container mx-auto flex justify-between items-center">
           <h1 className="text-3xl font-bold">Dex Screener</h1>
@@ -17,9 +16,7 @@ export default function Landing() {
         </div>
       </header>
       
-      {/* Main Content */}
       <main className="container mx-auto flex-grow p-6">
-        {/* Hero Section */}
         <section className="text-center my-12">
           <h2 className="text-4xl font-bold mb-4">Welcome to Dex Screener</h2>
           <p className="text-lg mb-8">Monitor your data and stay on top of your performance with our advanced dashboard.</p>
@@ -28,7 +25,6 @@ export default function Landing() {
           </Link>
         </section>
         
-        {/* Features Section */}
         <section className="my-12">
           <div className="grid md:grid-cols-3 gap-6">
             <Card>
@@ -36,7 +32,7 @@ export default function Landing() {
                 <CardTitle>Feature One</CardTitle>
               </CardHeader>
               <CardContent>
-                <p>Feature one description goes here.</p>
+                <p>View Latest Transactions from Uniswap and Pancakeswap</p>
               </CardContent>
             </Card>
             <Card>
@@ -44,7 +40,7 @@ export default function Landing() {
                 <CardTitle>Feature Two</CardTitle>
               </CardHeader>
               <CardContent>
-                <p>Feature two description goes here.</p>
+                <p>Filter Transaction based on DEX</p>
               </CardContent>
             </Card>
             <Card>
@@ -52,17 +48,16 @@ export default function Landing() {
                 <CardTitle>Feature Three</CardTitle>
               </CardHeader>
               <CardContent>
-                <p>Feature three description goes here.</p>
+                <p>Fast and Reliable</p>
               </CardContent>
             </Card>
           </div>
         </section>
       </main>
       
-      {/* Footer */}
       <footer className="bg-customPrimary text-white p-6">
         <div className="container mx-auto text-center">
-          <p>&copy; 2024 My Dashboard. All rights reserved.</p>
+          <p>&copy; 2024 Dex Screener. All rights reserved.</p>
         </div>
       </footer>
     </div>
