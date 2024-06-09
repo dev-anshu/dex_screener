@@ -9,7 +9,7 @@ export async function GET() {
         const cachedData = cache.get('uniswapData');
 
         if (cachedData) {
-            console.log(cachedData.data.swaps,'====>')
+            // console.log(cachedData.data.swaps,'====>')
             return NextResponse.json(cachedData);
         }
 
@@ -24,7 +24,7 @@ export async function GET() {
             throw new Error(`Error fetching data: ${response.statusText}`);
         }
         const data = await response.json();
-        console.log(data.data.swaps, "uniswap");
+        // console.log(data.data.swaps, "uniswap");
         cache.set('uniswapData', data);
         return NextResponse.json(data);
     } catch (error: any) {
