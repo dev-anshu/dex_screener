@@ -34,7 +34,7 @@ export default function RegisterForm() {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return emailRegex.test(email);
     };
-    setIsLoading(true);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -46,6 +46,7 @@ export default function RegisterForm() {
           setError("Password must be at least 8 characters long.");
           return;
         }
+        setIsLoading(true);
         try {
           const res = await fetch("api/register", {
             method: "POST",
