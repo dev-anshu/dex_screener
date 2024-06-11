@@ -12,11 +12,6 @@ interface User {
     updatedAt: Date;
 }
 
-interface User {
-    user_id: number;
-    email: string;
-    address: string;
-}
 
 export const authOptions: NextAuthOptions = {
     providers: [
@@ -52,7 +47,7 @@ export const authOptions: NextAuthOptions = {
                         throw new Error("Incorrect Password")
                     }
                 } catch(error:any) {
-                    throw new Error(error);
+                    throw new Error(error.message || 'An Error Occurred');
                 }
             }
         })
@@ -63,7 +58,9 @@ export const authOptions: NextAuthOptions = {
             return session;
         },
         async jwt({token, user}) {
-            if(user) token.user = user;
+            if(user) {
+                token.user = user;
+            }
             return token;
         }
     },
