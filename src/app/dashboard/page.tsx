@@ -15,6 +15,7 @@ export default function Dashboard() {
   const [selectedChain, setSelectedChain] = useState('Ethereum'); 
   const [swapTxn, setSwapTxn] = useState<Swap[]>([]);
   const { data: session, status } = useSession();
+  const [isLoading, setIsLoading] = useState(false); 
   const router = useRouter();
 
   const tabs = ['All', 'Uniswap', 'Pancakeswap'];
@@ -71,6 +72,7 @@ export default function Dashboard() {
       }
     }
     const getAllSwapTxns = async () => {
+      setIsLoading(true);
       try {
         let dexPromises = [];
         if(activeTab === "Uniswap") {
@@ -90,6 +92,8 @@ export default function Dashboard() {
         setSwapTxn(resultTxns);
       } catch (error) {
         console.error('Error fetching data:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -131,7 +135,7 @@ export default function Dashboard() {
           <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} tabs={tabs} />
           <SelectDropdown chainOptions={chainOptions} setSelectedChain={setSelectedChain} />
         </div>
-        <TableList txns={swapTxn} />
+        <TableList txns={swapTxn} isLoading={isLoading}/>
       </div>
     </div>
     </Suspense>
