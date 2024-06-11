@@ -14,6 +14,7 @@ export default function RegisterForm() {
     const [error, setError] = useState("");
     const {address: walletAddress, isConnected } = useAccount(); 
     const router = useRouter();
+    const [isLoading, setIsLoading] = useState(false);
     
 
     useEffect(() => {
@@ -33,7 +34,7 @@ export default function RegisterForm() {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return emailRegex.test(email);
     };
-
+    setIsLoading(true);
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -67,6 +68,8 @@ export default function RegisterForm() {
           }
         } catch (error) {
           console.log("Error during registration: ", error);
+        } finally {
+          setIsLoading(false);
         }
       };
 
@@ -100,7 +103,7 @@ export default function RegisterForm() {
               />
               {isConnected && (
                 <Button className="bg-gray-600 hover:bg-gray-700 text-white font-bold cursor-pointer px-6 py-2 rounded-lg">
-                  Register
+                  {isLoading ? "Registering..." : "Register"}
                 </Button>
               )}
               {error && (
